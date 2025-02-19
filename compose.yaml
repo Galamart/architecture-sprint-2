@@ -1,4 +1,4 @@
-name: mongo-sharding
+name: mongo-sharding-repl
 
 services:
   pymongo_api:
@@ -31,6 +31,26 @@ services:
       interval: 5s
       start_period: 10s
 
+  shard1-db2:
+    image: mongo:latest
+    volumes:
+      - shard1-db2-data:/data/db
+    command: [ "--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard1-db3:
+    image: mongo:latest
+    volumes:
+      - shard1-db3-data:/data/db
+    command: [ "--shardsvr", "--replSet", "shard1", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
   shard2-db1:
     image: mongo:latest
     volumes:
@@ -41,8 +61,28 @@ services:
       interval: 5s
       start_period: 10s
 
-  mongos_router:
+  shard2-db2:
     image: mongo:latest
+    volumes:
+      - shard2-db2-data:/data/db
+    command: [ "--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  shard2-db3:
+    image: mongo:latest
+    volumes:
+      - shard2-db3-data:/data/db
+    command: [ "--shardsvr", "--replSet", "shard2", "--bind_ip_all", "--port", "27017" ]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      start_period: 10s
+
+  mongos_router:
+    image: mongo:5
     command: [ "mongos", "--configdb", "config_server/configSrv:27019", "--bind_ip_all", "--port", "27017" ]
     healthcheck:
       test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
@@ -52,4 +92,8 @@ services:
 volumes:
   config-data:
   shard1-db1-data:
+  shard1-db2-data:
+  shard1-db3-data:
   shard2-db1-data:
+  shard2-db2-data:
+  shard2-db3-data:
