@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Инициируем сервер конфигурации
+# Cервер конфигурации
 docker compose exec -T configSrv mongosh --port 27019 <<EOF
 rs.initiate(
   {
@@ -13,37 +13,41 @@ rs.initiate(
 );
 EOF
 
-# Инициируем шард 1
+# шард 1
 sleep 1
 docker compose exec -T shard1-db1 mongosh <<EOF
 rs.initiate(
   {
     _id : "shard1",
     members: [
-      { _id : 0, host : "shard1-db1:27017" }
+      { _id : 0, host : "shard1-db1:27017" },
+      { _id : 1, host : "shard1-db2:27017" },
+      { _id : 2, host : "shard1-db3:27017" }
     ]
   }
 );
 EOF
 
-# Инициируем шард 2
+# шард 2
 sleep 1
 docker compose exec -T shard2-db1 mongosh <<EOF
 rs.initiate(
   {
     _id : "shard2",
     members: [
-      { _id : 0, host : "shard2-db1:27017" }
+      { _id : 0, host : "shard2-db1:27017" },
+      { _id : 1, host : "shard2-db2:27017" },
+      { _id : 2, host : "shard2-db3:27017" }
     ]
   }
 );
 EOF
 
-# Инициируем роутер, наполняем базу тестовыми данными
+# роутер + заполняем базу тестовыми данными
 sleep 1
 docker compose exec -T mongos_router mongosh <<EOF
-sh.addShard("shard1/shard1-db1:27017");
-sh.addShard("shard2/shard2-db1:27017");
+sh.addShard("shard1/shard1-db1:27017,shard1-db2:27017,shard1-db3:27017");
+sh.addShard("shard2/shard2-db1:27017,shard2-db2:27017,shard2-db3:27017");
 sh.enableSharding("somedb");
 sh.shardCollection("somedb.helloDoc", {"name" : "hashed"});
 use somedb;
@@ -58,7 +62,31 @@ db.helloDoc.countDocuments();
 exit();
 EOF
 
+docker compose exec -T shard1-db2 mongosh <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+
+docker compose exec -T shard1-db3 mongosh <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+
 docker compose exec -T shard2-db1 mongosh <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+
+docker compose exec -T shard2-db2 mongosh <<EOF
+use somedb;
+db.helloDoc.countDocuments();
+exit();
+EOF
+
+docker compose exec -T shard2-db3 mongosh <<EOF
 use somedb;
 db.helloDoc.countDocuments();
 exit();
