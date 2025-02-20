@@ -1,6 +1,9 @@
 
 # pymongo-api
 
+## Схемы
+https://drive.google.com/file/d/1RU6AOmH-qBJAdR2rnlsOPsjmPKX86vxK/view?usp=sharing
+
 ## Как запустить
 
 Запускаем mongodb и приложение
@@ -44,13 +47,3 @@ docker compose up -d
 time curl http://localhost:8080/helloDoc/users
 ```
 Второй и последующие вызовы эндпоинта /<collection_name>/users выполняются быстрее.
-
-Мои результаты проверки
-- первый запуск
-	+ 0.025
-- второй запуск
-	+ 0.020
-- третий запуск
-	+ 0.014
-- четвёртый запуск
-	- 0.016
