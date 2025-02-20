@@ -54,7 +54,7 @@ sh.addShard("shard2/shard2-n1:27016,shard2-n2:27022,shard2-n3:27023");
 sh.enableSharding("somedb");
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
 use somedb
-for(var i = 0; i < 1000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i})
+for(var i = 0; i < 3000; i++) db.helloDoc.insertOne({age:i, name:"ly"+i})
 db.helloDoc.countDocuments()
 EOF
 echo "Finish"
