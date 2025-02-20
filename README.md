@@ -1,7 +1,7 @@
 
 # pymongo-api
 
-## Схемы
+## Схемы для задания 1, 5, 6
 https://drive.google.com/file/d/1RU6AOmH-qBJAdR2rnlsOPsjmPKX86vxK/view?usp=sharing
 
 ## Как запустить
