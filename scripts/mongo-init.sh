@@ -8,7 +8,7 @@ done
 echo "Все контейнеры запущены!"
 
 echo "Инициализация сервера конфигурации..."
-docker compose exec -T configSrv mongosh --port 27019 <<EOF
+docker compose exec -it configSrv mongosh --port 27019 <<EOF
 rs.initiate({
   _id: "config_server",
   members: [{ _id: 0, host: "configSrv:27019" }]
@@ -17,7 +17,7 @@ while (!rs.status().ok) { sleep(1000); }
 EOF
 
 echo "Инициализация шарда 1..."
-docker compose exec -T shard1-db1 mongosh --port 27017 <<EOF
+docker compose exec -it shard1-db1 mongosh --port 27017 <<EOF
 rs.initiate({
   _id: "shard1",
   members: [{ _id: 0, host: "shard1-db1:27017" }]
