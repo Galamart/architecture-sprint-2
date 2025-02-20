@@ -20,7 +20,7 @@ echo "Инициализация шарда 1..."
 docker compose exec -it shard1-db1 mongosh --port 27017 <<EOF
 rs.initiate({
   _id: "shard1",
-  members: [{ _id: 0, host: "shard1-db1:27017" }]
+  members: [{ _id: 0, host: "shard1-db1:27017" }, { _id: 1, host: "shard2-db1:27018" }]
 });
 while (!rs.status().ok) { sleep(1000); }
 EOF
@@ -29,7 +29,7 @@ echo "Инициализация шарда 2..."
 docker compose exec -it shard2-db1 mongosh --port 27018 <<EOF
 rs.initiate({
   _id: "shard2",
-  members: [{ _id: 0, host: "shard2-db1:27018" }]
+  members: [{ _id: 0, host: "shard1-db1:27017" }, { _id: 1, host: "shard2-db1:27018" }]
 });
 while (!rs.status().ok) { sleep(1000); }
 EOF
