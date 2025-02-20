@@ -62,7 +62,7 @@ services:
     restart: always
     ports:
       - "27020:27020"
-    command: [ "mongos", "--configdb", "config_server/configSrv:27019", "--bind_ip_all", "--port", "27020" ]
+    command: [ "mongos", "--configdb", "configSrv/configSrv:27019", "--bind_ip_all", "--port", "27020" ]
     healthcheck:
       test: [ "CMD", "mongosh", "--port", "27020", "--eval", "db.adminCommand('ping')" ]
       interval: 5s
