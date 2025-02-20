@@ -7,9 +7,6 @@ services:
     restart: always
     ports:
       - "27017:27017"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.10
     volumes:
       - config-data:/data/db
     command:
@@ -33,9 +30,6 @@ services:
     restart: always
     ports:
       - "27018:27018"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.9
     volumes:
       - shard1-n1-data:/data/db
     command:
@@ -58,9 +52,6 @@ services:
     restart: always
     ports:
       - "27019:27019"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.11
     volumes:
       - shard1-n2-data:/data/db
     command:
@@ -83,9 +74,6 @@ services:
     restart: always
     ports:
       - "27021:27021"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.12
     volumes:
       - shard1-n3-data:/data/db
     command:
@@ -110,9 +98,6 @@ services:
     restart: always
     ports:
       - "27016:27016"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.8
     volumes:
       - shard2-n1-data:/data/db
     command:
@@ -135,9 +120,6 @@ services:
     restart: always
     ports:
       - "27022:27022"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.13
     volumes:
       - shard2-n2-data:/data/db
     command:
@@ -160,9 +142,6 @@ services:
     restart: always
     ports:
       - "27023:27023"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.14
     volumes:
       - shard2-n3-data:/data/db
     command:
@@ -186,9 +165,6 @@ services:
     restart: always
     ports:
       - "27020:27020"
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.7
     command:
       [
         "mongos", #обычная mongo в режиме роутера
@@ -212,9 +188,6 @@ services:
       - redis1_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
-    networks:
-      app-network:
-        ipv4_address: 173.17.0.6
 
 # sharding-repl-cache
   sharding-repl-cache:
@@ -231,15 +204,6 @@ services:
       MONGODB_URL: "mongodb://mongos_router:27020"
       MONGODB_DATABASE_NAME: "somedb"
       REDIS_URL: "redis://redis1:6379"
-
-# networks
-networks:
-  app-network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 173.17.0.0/16    
 
 volumes:
   config-data:
